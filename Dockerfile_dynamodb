@@ -1,0 +1,2 @@
+FROM dwmkerr/dynamodb
+EXPOSE 8000
