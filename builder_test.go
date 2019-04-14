@@ -19,7 +19,7 @@ func TestFilterBuilder_Equal(t *testing.T) {
 	b.Equal("Name", "Taro").
 		Equal("Name", "Hanako")
 
-	expectedJoin := "('Name' = ? AND 'Name' = ?)"
+	expectedJoin := "('Name' = ?) AND ('Name' = ?)"
 	if b.JoinAnd() != expectedJoin {
 		t.Fatalf("Not match join string: actual:%s exptected:%s", b.JoinAnd(), expectedJoin)
 	}
@@ -40,7 +40,7 @@ func TestFilterBuilder_Op(t *testing.T) {
 		Op("Name5", GT, "Taro5").
 		Op("Name6", GE, "Taro6")
 
-	expectedJoin := "('Name1' = ? AND 'Name2' <> ? AND 'Name3' < ? AND 'Name4' <= ? AND 'Name5' > ? AND 'Name6' >= ?)"
+	expectedJoin := "('Name1' = ?) AND ('Name2' <> ?) AND ('Name3' < ?) AND ('Name4' <= ?) AND ('Name5' > ?) AND ('Name6' >= ?)"
 	if b.JoinAnd() != expectedJoin {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expectedJoin)
 	}
@@ -57,7 +57,7 @@ func TestFilterBuilder_Between(t *testing.T) {
 
 	b.Between("Name", "Taro", "Hanako")
 
-	expected := "('Name' BETWEEN ? AND ?)"
+	expected := "'Name' BETWEEN ? AND ?"
 	if b.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expected)
 	}
@@ -75,7 +75,7 @@ func TestFilterBuilder_In(t *testing.T) {
 
 	b.In("Name", "Taro1", "Taro2", "Taro3")
 
-	expected := "('Name' IN (?,?,?))"
+	expected := "'Name' IN (?,?,?)"
 	if b.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expected)
 	}
@@ -92,7 +92,7 @@ func TestFilterBuilder_AttributeExists(t *testing.T) {
 
 	b.AttributeExists("Name")
 
-	expected := "(attribute_exists('Name'))"
+	expected := "attribute_exists('Name')"
 	if b.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expected)
 	}
@@ -103,7 +103,7 @@ func TestFilterBuilder_AttributeNotExists(t *testing.T) {
 
 	b.AttributeNotExists("Name")
 
-	expected := "(attribute_not_exists('Name'))"
+	expected := "attribute_not_exists('Name')"
 	if b.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expected)
 	}
@@ -114,7 +114,7 @@ func TestFilterBuilder_AttributeType(t *testing.T) {
 
 	b.AttributeType("Name", S)
 
-	expected := "(attribute_type('Name', ?))"
+	expected := "attribute_type('Name', ?)"
 	if b.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expected)
 	}
@@ -129,7 +129,7 @@ func TestFilterBuilder_BeginsWith(t *testing.T) {
 
 	b.BeginsWith("Name", "Taro")
 
-	expected := "(begins_with('Name', ?))"
+	expected := "begins_with('Name', ?)"
 	if b.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expected)
 	}
@@ -144,7 +144,7 @@ func TestFilterBuilder_Contains(t *testing.T) {
 
 	b.Contains("Name", "Taro")
 
-	expected := "(contains('Name', ?))"
+	expected := "contains('Name', ?)"
 	if b.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expected)
 	}
@@ -159,7 +159,7 @@ func TestFilterBuilder_Size(t *testing.T) {
 
 	b.Size("Name")
 
-	expected := "(size('Name'))"
+	expected := "size('Name')"
 	if b.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b.JoinAnd(), expected)
 	}
@@ -174,7 +174,7 @@ func TestFilterBuilder_JoinAndOr(t *testing.T) {
 
 	b2.Append(b1.JoinOr(), b1.Arg)
 
-	expected := "('Age' = ? AND ('Name' = ? OR 'Name' = ?))"
+	expected := "('Age' = ?) AND (('Name' = ?) OR ('Name' = ?))"
 	if b2.JoinAnd() != expected {
 		t.Fatalf("Not match join string: actual:%s expected:%s", b2.JoinAnd(), expected)
 	}

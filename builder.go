@@ -106,12 +106,23 @@ func (f *Builder) Size(path string) *Builder {
 	return f.appendExpr(fmt.Sprintf("size('%s')", path))
 }
 
+func (f *Builder) generateExps() []string {
+	var exps []string
+	for _, e := range f.Expr {
+		exps = append(exps, fmt.Sprintf("(%s)", e))
+	}
+	return exps
+}
+
 func (f *Builder) JoinAnd() string {
-	return fmt.Sprintf("(%s)", strings.Join(f.Expr, " AND "))
+	if len(f.Expr) == 1 {
+		return f.Expr[0]
+	}
+	return strings.Join(f.generateExps(), " AND ")
 }
 
 func (f *Builder) JoinOr() string {
-	return fmt.Sprintf("(%s)", strings.Join(f.Expr, " OR "))
+	return strings.Join(f.generateExps(), " OR ")
 }
 
 func (f *Builder) HasFilter() bool {
